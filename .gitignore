@@ -1,0 +1,20 @@
+# Visual Studio 관련 임시 폴더
+.vs/
+Debug/
+Release/
+x64/
+x86/
+
+# 빌드할 때 나오는 찌꺼기 파일들
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.tlog
+*.idb
+*.aps
+*.log
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.slnx
