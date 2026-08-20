@@ -254,8 +254,8 @@ void RBT_RebuildAfterRemove(RBTNode** Root, RBTNode* Successor)
 	// Successor가 뿌리 노드 혹은 빨간색 노드라면 종료(이중 흑색이 뿌리 혹은 빨간 노드로)
 	while (Successor->Parent != NULL && Successor->Color == BLACK)
 	{
-		if (Successor == Successor->Parent->Left)// 이중 흑색 노드가 부모 노드의 왼쪽 자식인 경우
-		{
+		if (Successor == Successor->Parent->Left)
+		{// 이중 흑색 노드가 부모 노드의 왼쪽 자식인 경우
 			Sibling = Successor->Parent->Right;
 
 			if (Sibling->Color == RED)// Case 1. 형제가 빨간색인 경우
@@ -273,8 +273,9 @@ void RBT_RebuildAfterRemove(RBTNode** Root, RBTNode* Successor)
 				}
 				else
 				{
-					if (Sibling->Left->Color == RED)// Case 2-2. 왼쪽 자식이 빨간색인 경우
-					{// Case 2-3으로 위임
+					if (Sibling->Left->Color == RED)
+					{//    Case 2-2. 왼쪽 자식이 빨간색인 경우
+						// Case 2-3으로 위임
 						Sibling->Left->Color = BLACK;
 						Sibling->Color = RED;
 
@@ -287,7 +288,8 @@ void RBT_RebuildAfterRemove(RBTNode** Root, RBTNode* Successor)
 					Sibling->Right->Color = BLACK;
 					RBT_RotateLeft(Root, Successor->Parent);
 
-					// 이중 흑색 문제 완전 해결, 루프 탈출을 위해 Successor를 뿌리로 이동
+					// 이중 흑색 문제 완전 해결
+					// 루프 탈출을 위해 Successor를 뿌리로 이동
 					Successor = (*Root);
 				}
 			}
