@@ -242,8 +242,8 @@ RBTNode* RBT_RemoveNode(RBTNode** Root, ElementType Data)
 			Removed->Parent->Right = Successor;
 	}
 
-	if (Removed->Color == BLACK)
-		RBT_RebuildAfterRemove(Root, Successor);
+	if (Removed->Color == BLACK)// 삭제한 노드가 검은색이라면
+		RBT_RebuildAfterRemove(Root, Successor);// 대체 노드 넘기기(이중 흑색 노드)
 
 	return Removed;
 }
@@ -251,47 +251,49 @@ RBTNode* RBT_RemoveNode(RBTNode** Root, ElementType Data)
 void RBT_RebuildAfterRemove(RBTNode** Root, RBTNode* Successor)
 {
 	RBTNode* Sibling = NULL;
-
+	// Successor가 뿌리 노드 혹은 빨간색 노드라면 종료(이중 흑색이 뿌리 혹은 빨간 노드로)
 	while (Successor->Parent != NULL && Successor->Color == BLACK)
 	{
-		if (Successor == Successor->Parent->Left)
+		if (Successor == Successor->Parent->Left)// 이중 흑색 노드가 부모 노드의 왼쪽 자식인 경우
 		{
 			Sibling = Successor->Parent->Right;
 
-			if (Sibling->Color == RED)
-			{
+			if (Sibling->Color == RED)// Case 1. 형제가 빨간색인 경우
+			{// Case 2-1, 2-2, 2-3으로 상황을 위임
 				Sibling->Color = BLACK;
 				Successor->Parent->Color = RED;
 				RBT_RotateLeft(Root, Successor->Parent);
 			}
-			else
+			else// Case 2. 형제가 검은색이며
 			{
 				if (Sibling->Left->Color == BLACK && Sibling->Right->Color == BLACK)
-				{
+				{// Case 2-1. 양쪽 자식이 모두 검은색인 경우
 					Sibling->Color = RED;
-					Successor = Successor->Parent;
+					Successor = Successor->Parent;// 부모로 위임
 				}
 				else
 				{
-					if (Sibling->Left->Color == RED)
-					{
+					if (Sibling->Left->Color == RED)// Case 2-2. 왼쪽 자식이 빨간색인 경우
+					{// Case 2-3으로 위임
 						Sibling->Left->Color = BLACK;
 						Sibling->Color = RED;
 
 						RBT_RotateRight(Root, Sibling);
 						Sibling = Successor->Parent->Right;
 					}
-
+					// Case 2-3. 오른쪽 자식이 빨간색인 경우
 					Sibling->Color = Successor->Parent->Color;
 					Successor->Parent->Color = BLACK;
 					Sibling->Right->Color = BLACK;
 					RBT_RotateLeft(Root, Successor->Parent);
+
+					// 이중 흑색 문제 완전 해결, 루프 탈출을 위해 Successor를 뿌리로 이동
 					Successor = (*Root);
 				}
 			}
 		}
-		else
-		{
+		else// 이중 흑색 노드가 부모 노드의 오른쪽 자식인 경우
+		{   // 이하 왼쪽 로직과 같음
 			Sibling = Successor->Parent->Left;
 
 			if (Sibling->Color == RED)
